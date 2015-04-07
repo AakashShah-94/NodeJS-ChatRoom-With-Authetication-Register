@@ -10,7 +10,7 @@ var router = express.Router();
 
 /* GET register page. */
 router.get('/', rules.rules().isLogged, function(req, res) {
-    res.render('register', { csrfToken: req.csrfToken() });
+    res.render('register', { title: "Chat Room - Registration" });
 });
 
 router.post('/', function(req, res) {
@@ -27,7 +27,7 @@ router.post('/', function(req, res) {
             if (err.code === 11000) {
                 error = 'That email is already taken, try another!';
             }
-            res.render('register', { error: error });
+            res.render('register', { title: "Chat Room - Registration", error: error });
         } else {
             res.redirect('/auth');
         }

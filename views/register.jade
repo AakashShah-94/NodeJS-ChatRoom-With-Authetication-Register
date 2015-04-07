@@ -1,7 +1,6 @@
 extends base
-block vars
-    var title = 'Registration'
 block content
+    title= title
     link(rel='stylesheet', href='./stylesheets/vendor/vegas/vegas.min.css')
     div.container
         div.row
@@ -23,11 +22,11 @@ block content
                                         form#form-signin.form-horizontal.form-signin(method='post', accept-charset='utf-8', autocomplete='off', role='form', name='form-signin')
                                             input(type="hidden", name="_csrf", value=csrfToken)
                                             if error
-                                                .alert.alert-danger.alert-dismissible(role='alert')
-                                                    button.close(type='button', data-dismiss='alert', aria-label='Close')
-                                                        span(aria-hidden='true') ×
-                                                    strong Error!
-                                                        #{error}
+                                                .form-group
+                                                    .alert.alert-danger.alert-dismissible(role='alert')
+                                                        button.close(type='button', data-dismiss='alert', aria-label='Close')
+                                                            span(aria-hidden='true') ×
+                                                        strong Error! #{error}
                                             .form-group
                                                 span(id="reauth-email", class="reauth-email")
                                             .form-group
@@ -52,10 +51,14 @@ block content
 
     script(type='text/javascript' src='http://zeptojs.com/zepto.min.js')
     script(type='text/javascript' src='./javascripts/vendor/vegas/vegas.min.js')
-    script(type='text/javascript' src='./javascripts/auth/vegas.js')
+    script(type='text/javascript' src='./javascripts/vendor/vegas.js')
     script(type='text/javascript' src='./javascripts/auth/auth.js')
     script(type='text/javascript').
         $(document).ready(function () {
+            $(".close").click(function () {
+                $(this).alert('close');
+            });
+
             // Init Background plugin vegas
             var _vegas = new background();
             _vegas.init();

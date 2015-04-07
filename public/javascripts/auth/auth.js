@@ -56,7 +56,7 @@ function auth () {
                 this.getLocalProfile(function (profileName, profileReAuthEmail) {
                     //Change the UI
                     $profileName.html(profileName);
-                    $reauthEmail.html("Welcame back, " + profileReAuthEmail + "<a id=\"profile-disconnect\" title=\"Remove this account.\" class=\"pull-right\" href=\"javascript:;\">x</a>");
+                    $reauthEmail.html("Welcame back, " + profileReAuthEmail + "<a id=\"profile-disconnect\" title=\"Remove this account.\" class=\"pull-right\" href=\"javascript:;\" style=\"color: red;\">x</a>");
 
                     // Set the {profileReAuthEmail} to input email,
                     // because this field have required tag if you not set this
@@ -130,10 +130,10 @@ function auth () {
         isSetProfileLocalStorage: function () {
             if (!this.supportsHTML5Storage()) { return false; }
             if (localStorage.length > 0) {
-                if (localStorage.getItem("PROFILE_NAME") !== null
-                    && localStorage.getItem("PROFILE_NAME") !== ""
-                    && localStorage.getItem("PROFILE_REAUTH_EMAIL") !== null
-                    && localStorage.getItem("PROFILE_REAUTH_EMAIL") !== "")
+                if ((localStorage.getItem("PROFILE_NAME") !== null
+                    && localStorage.getItem("PROFILE_NAME") !== "")
+                    || (localStorage.getItem("PROFILE_REAUTH_EMAIL") !== null
+                    && localStorage.getItem("PROFILE_REAUTH_EMAIL") !== ""))
                 return true;
             } else {
                 return false;

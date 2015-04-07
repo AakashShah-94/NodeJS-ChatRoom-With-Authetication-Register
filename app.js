@@ -2,7 +2,7 @@
 // dependencies
 var express         = require('express'),
     path            = require('path'),
-    //favicon         = require('serve-favicon'),
+    favicon         = require('serve-favicon'),
     logger          = require('morgan'),
     cookieParser    = require('cookie-parser'),
     csrf            = require("csurf"),
@@ -20,15 +20,19 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+app.use(favicon(__dirname + '/public/favicon.ico'));
+app.use(require('stylus').middleware(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.locals.pretty = true;
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-
-// middleware
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(sessions.session);
+
+// middleware of session authenticate user
 app.use(function(req, res, next) {
     if (req.session && req.session.user) {
         mongo.Users.findOne({ email: req.session.user.email }, function(err, user) {
@@ -45,15 +49,12 @@ app.use(function(req, res, next) {
     }
 });
 
-app.use(cookieParser());
-app.use(require('stylus').middleware(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Session
-app.use(sessions.session);
-
 // Csrf protection
-app.use(csrf());
+app.use(csrf()).use(function (req, res, next) {
+    res.cookie('XSRF-TOKEN', req.csrfToken());
+    res.locals.csrfToken = req.csrfToken();
+    next();
+});
 
 // Routers
 app.use('/', routes.index);
@@ -82,6 +83,7 @@ if (app.get('env') === 'development') {
     app.use(function(err, req, res) {
         res.status(err.status || 500);
         res.render('error', {
+            title: 'Chat Room - Error',
             message: err.message,
             error: err
         });
@@ -93,6 +95,7 @@ if (app.get('env') === 'development') {
 app.use(function(err, req, res) {
   res.status(err.status || 500);
   res.render('error', {
+    title: 'Chat Room - Error',
     message: err.message,
     error: {}
   });

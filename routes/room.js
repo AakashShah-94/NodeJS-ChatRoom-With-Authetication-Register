@@ -7,6 +7,6 @@ var router          = express.Router();
 
 /* GET rooms page. */
 router.get('/', rules.rules().requiredLogin, function(req, res) {
-    res.render('room');
+    res.render('room', { title: "Chat Room - Room" });
 });
 module.exports = router;
