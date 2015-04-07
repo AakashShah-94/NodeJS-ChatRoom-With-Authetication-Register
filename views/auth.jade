@@ -1,0 +1,45 @@
+// Created by User on 05/04/2015.
+extends base
+block vars
+    var title = 'Login'
+block content
+    link(rel='stylesheet', href='./stylesheets/vendor/vegas/vegas.min.css')
+    div.container
+        div.row
+            div.col-sm-6.col-md-4.col-md-offset-4
+                div.card.card-container
+                    img(id='profile-img', class='profile-img-card', src='//ssl.gstatic.com/accounts/ui/avatar_2x.png')
+                    p#profile-name.profile-name-card
+                    form(name='form-signin', method='post', class='form-signin')
+                        input(type="hidden", name="_csrf", value=csrfToken)
+                        if error
+                            .alert.alert-danger.alert-dismissible(role='alert')
+                                button.close(type='button', data-dismiss='alert', aria-label='Close')
+                                    span(aria-hidden='true') ×
+                                strong Error!
+                                    #{error}
+                        span(id="reauth-email", class="reauth-email")
+                        input(type="email", name='email', id="email", class="form-control", placeholder="Email address", required)
+                        input(type="password", name='password', id="password", class="form-control", placeholder="Password", required)
+                        div#remember.checkbox
+                            label
+                                input(type="checkbox", value="remember-me")
+                                | Remember me
+                        button(type="submit", class="btn btn-lg btn-danger btn-block btn-signin") Sign in
+                        a(href="#", class="forgot-password") Forgot the password?
+
+    script(type='text/javascript' src='http://zeptojs.com/zepto.min.js')
+    script(type='text/javascript' src='./javascripts/vendor/vegas/vegas.min.js')
+    script(type='text/javascript' src='./javascripts/auth/vegas.js')
+    script(type='text/javascript' src='./javascripts/auth/auth.js')
+    script(type='text/javascript').
+        $(document).ready(function() {
+            // Init Background plugin vegas
+            var _vegas = new background();
+            _vegas.init();
+
+            // Init the js of page auth
+            var _auth = new auth();
+            _auth.init();
+            _auth.loadProfile();
+        });

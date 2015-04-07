@@ -1,0 +1,60 @@
+extends base
+block vars
+    var title = 'Registration'
+block content
+    link(rel='stylesheet', href='./stylesheets/vendor/vegas/vegas.min.css')
+    .container
+        .row.centered-form
+            .col-xs-12.col-sm-8.col-md-4.col-sm-offset-2.col-md-offset-4
+                .panel.panel-default
+                    .panel-heading
+                        h3.panel-title
+                            | Please sign up for Chat Room
+                            small It's free!
+                    .panel-body
+                        form(role='form', method="post", name="form-signin", id="form-signin")
+                            input(type="hidden", name="_csrf", value=csrfToken)
+                            .row
+                                if error
+                                    .alert.alert-danger.alert-dismissible(role='alert')
+                                        button.close(type='button', data-dismiss='alert', aria-label='Close')
+                                            span(aria-hidden='true') ×
+                                        strong Error!
+                                            #{error}
+                                .col-xs-6.col-sm-6.col-md-6
+                                    .form-group
+                                        input#firstname.form-control.input-sm(type='text', name='firstname', placeholder='First Name')
+                                .col-xs-6.col-sm-6.col-md-6
+                                    .form-group
+                                        input#lastname.form-control.input-sm(type='text', name='lastname', placeholder='Last Name')
+                            .form-group
+                                input#email.form-control.input-sm(type='email', name='email', placeholder='Email Address')
+                            .row
+                                .col-xs-6.col-sm-6.col-md-6
+                                    .form-group
+                                        input#password.form-control.input-sm(type='password', name='password', placeholder='Password')
+                            button.btn.btn-danger.btn-block(type='submit') Register
+
+    script(type='text/javascript' src='http://zeptojs.com/zepto.min.js')
+    script(type='text/javascript' src='./javascripts/vendor/vegas/vegas.min.js')
+    script(type='text/javascript' src='./javascripts/auth/vegas.js')
+    script(type='text/javascript' src='./javascripts/auth/auth.js')
+    script(type='text/javascript').
+        $(document).ready(function () {
+            // Init Background plugin vegas
+            var _vegas = new background();
+            _vegas.init();
+
+            var _auth = new auth();
+            $('#form-signin').submit(function () {
+                var email = $("#email").val();
+                var fullname = $("#firstname").val() + ' ' + $("#lastname").val();
+
+                if (!_auth.isSetProfileLocalStorage()) {
+                    _auth.setProfileLocalStorageData('//ssl.gstatic.com/accounts/ui/avatar_2x.png', fullname, email);
+                } else {
+                    _auth.clearProfileLocalStorega();
+                    _auth.setProfileLocalStorageData('//ssl.gstatic.com/accounts/ui/avatar_2x.png', fullname, email);
+                }
+            })
+        });
