@@ -18,19 +18,19 @@ router.post('/', function(req, res) {
         var error = "";
         if (err) {
             error = 'Opps, something happened! Try again in few minutes!';
-            res.render('auth', { error: error });
+            res.render('auth', { error: error, csrfToken: req.csrfToken() });
         } else {
-            error = "";
+            error = '';
             if (!user) {
-                error = "Invalid email or password!";
+                error = 'Invalid email or password!';
                 res.render('auth', { error: error });
             } else {
                 if (bcrypt.crypt().compareHashSync(req.body.password, user.password)) {
                     req.session.user = user;
                     res.redirect('/room');
                 } else {
-                    error = "Invalid email or password!";
-                    res.render('auth', { error: error });
+                    error = 'Invalid email or password!';
+                    res.render('auth', { error: error, csrfToken: req.csrfToken() });
                 }
             }
         }

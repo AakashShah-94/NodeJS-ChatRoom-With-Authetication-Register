@@ -7,6 +7,7 @@ function auth () {
         init: function () {
             var $inputEmail = $("#email");
             var $inputPassword = $("#password");
+            var $this = this;
 
             // Case the email input not hide set focus, else set focus on
             // input password
@@ -16,30 +17,68 @@ function auth () {
                 $inputPassword.focus();
             }
 
-            if (!this.isSetProfileLocalStorage()) {
-                if (this.supportsHTML5Storage())
+            // If not have any profile, clear localStorage
+            if (this.supportsHTML5Storage()) {
+                if (!this.isSetProfileLocalStorage())
                     this.clearProfileLocalStorega();
             }
+
+            // Delegate the {a#profile-disconnect} because
+            // this not is create yet
+            // this link is create when have a profile in localStorage
+            var $formSignin = $(".form-signin");
+            $formSignin.delegate("a#profile-disconnect", "click", function(){
+                if ($this.supportsHTML5Storage()) {
+                    if ($this.isSetProfileLocalStorage()) {
+                        $this.clearProfileLocalStorega();
+                        $this.loadProfile();
+                    }
+                }
+            });
         },
         /**
          * Main function that load the profile if exists
          * in localstorage
          */
         loadProfile: function() {
-            if (!this.supportsHTML5Storage()) { return false }
-            this.getLocalProfile(function(profileImgSrc, profileName, profileReAuthEmail) {
-                //Change the UI
-                $("#profile-img").attr("src",profileImgSrc);
-                $("#profile-name").html(profileName);
-                $("#reauth-email").html(profileReAuthEmail);
+            var $profileName = $("#profile-name"),
+                $reauthEmail = $("#reauth-email"),
+                $email       = $("#email"),
+                $password    = $("#password"),
+                $remember    = $(".remember_me");
 
-                // Set the {profileReAuthEmail} to input email,
-                // because this field have required tag if you not set this
-                // will give an error
-                $("#email").val(profileReAuthEmail);
-                $("#email").hide();
-                $("#remember").hide();
-            });
+            // If not supports Storage return false
+            if (!this.supportsHTML5Storage()) { return false }
+
+            // Check if same profile is set
+            if (this.isSetProfileLocalStorage()) {
+                // Get the profile from localStorage
+                this.getLocalProfile(function (profileName, profileReAuthEmail) {
+                    //Change the UI
+                    $profileName.html(profileName);
+                    $reauthEmail.html("Welcame back, " + profileReAuthEmail + "<a id=\"profile-disconnect\" title=\"Remove this account.\" class=\"pull-right\" href=\"javascript:;\">x</a>");
+
+                    // Set the {profileReAuthEmail} to input email,
+                    // because this field have required tag if you not set this
+                    // will give an error
+                    $email.val(profileReAuthEmail);
+
+                    $email.hide();
+                    $remember.hide();
+                    $password.focus();
+                });
+            } else {
+                //Change the UI
+                $profileName.html("");
+                $reauthEmail.html("");
+
+                // Set empty value to input email
+                $email.val("");
+
+                $email.show();
+                $email.focus();
+                $remember.show();
+            }
         },
         /**
          * Function that gets the data of the profile in case
@@ -50,14 +89,12 @@ function auth () {
          *
          */
         getLocalProfile: function(callback) {
-            var profileImgSrc      = localStorage.getItem("PROFILE_IMG_SRC");
             var profileName        = localStorage.getItem("PROFILE_NAME");
             var profileReAuthEmail = localStorage.getItem("PROFILE_REAUTH_EMAIL");
 
             if(profileName !== null
-                && profileReAuthEmail !== null
-                && profileImgSrc !== null) {
-                callback(profileImgSrc, profileName, profileReAuthEmail);
+                && profileReAuthEmail !== null) {
+                callback(profileName, profileReAuthEmail);
             }
         },
         /**
@@ -82,11 +119,12 @@ function auth () {
          *
          * @returns {boolean}
          */
-        setProfileLocalStorageData:  function (profileImgSrc, profileName, profileReAuthEmail) {
+        setProfileLocalStorageData:  function (profileName, profileReAuthEmail) {
             if(!this.supportsHTML5Storage()) { return false; }
-            localStorage.setItem("PROFILE_IMG_SRC", profileImgSrc);
             localStorage.setItem("PROFILE_NAME", profileName);
             localStorage.setItem("PROFILE_REAUTH_EMAIL", profileReAuthEmail);
+
+            this.loadProfile();
         },
 
         isSetProfileLocalStorage: function () {

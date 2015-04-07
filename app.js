@@ -55,6 +55,7 @@ app.use(sessions.session);
 // Csrf protection
 app.use(csrf());
 
+// Routers
 app.use('/', routes.index);
 app.use('/users', users);
 app.use('/room', room);
