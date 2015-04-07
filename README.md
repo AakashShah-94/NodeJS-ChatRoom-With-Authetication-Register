@@ -1,5 +1,4 @@
-Chat Room NodeJS
-A website and chat room system Node.js.
+Chat Room NodeJS is web chatroom system with Node.js.
 
 Technology
 
@@ -21,13 +20,13 @@ We use bcrypt for hashing secrets. If you have issues during installation relate
 You need a few records in the database to start using the user system.
 
 Run these commands on mongo.
-use drywall; //your mongo db name
-db.users.save({ username: 'root', isActive: 'yes', email: 'your@email.addy', roles: {admin: rootAdmin._id} });
+use chatrooms; //your mongo db name
+db.Users.save({ firstname: 'admin', lastname: 'admin', email: 'your@email.com', password: '');
 
 Features
-
-Login system with forgot password and reset password.
-Signup and Login with Facebook, Twitter, GitHub, Google and Tumblr.
+-Login system with forgot password and reset password.
+-Chat room working
+-New Html style for the auth.jade, register.jade, room.jade, index.js
 
 Enjoy.
 
