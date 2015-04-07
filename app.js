@@ -1,18 +1,19 @@
-var express         = require('express');
-var path            = require('path');
-var favicon         = require('serve-favicon');
-var logger          = require('morgan');
-var cookieParser    = require('cookie-parser');
-var csrf            = require("csurf");
-var bodyParser      = require('body-parser');
 
-var routes          = require('./routes/index');
-var sessions        = require('./routes/session');
-var users           = require('./routes/users');
-var auth            = require('./routes/auth');
-var register        = require('./routes/register');
-var room            = require('./routes/room');
-var mongo           = require('./routes/mongo');
+// dependencies
+var express         = require('express'),
+    path            = require('path'),
+    //favicon         = require('serve-favicon'),
+    logger          = require('morgan'),
+    cookieParser    = require('cookie-parser'),
+    csrf            = require("csurf"),
+    bodyParser      = require('body-parser'),
+    routes          = require('./routes/index'),
+    sessions        = require('./routes/session'),
+    users           = require('./routes/users'),
+    auth            = require('./routes/auth'),
+    register        = require('./routes/register'),
+    room            = require('./routes/room'),
+    mongo           = require('./routes/mongo');
 
 var app = express();
 
@@ -50,6 +51,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Session
 app.use(sessions.session);
+
+// Csrf protection
 app.use(csrf());
 
 app.use('/', routes.index);
@@ -57,7 +60,7 @@ app.use('/users', users);
 app.use('/room', room);
 app.use('/auth', auth);
 app.use('/register', register);
-app.use('/logout', function(req, res, next) {
+app.use('/logout', function(req, res) {
     req.session.reset();
     res.redirect('/auth');
 });
@@ -75,7 +78,7 @@ app.use(function(req, res, next) {
 // will print stacktrace
 if (app.get('env') === 'development') {
     app.locals.pretty = false;
-    app.use(function(err, req, res, next) {
+    app.use(function(err, req, res) {
         res.status(err.status || 500);
         res.render('error', {
             message: err.message,
@@ -86,7 +89,7 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res, next) {
+app.use(function(err, req, res) {
   res.status(err.status || 500);
   res.render('error', {
     message: err.message,

@@ -1,28 +1,26 @@
-/**
- * Created by User on 05/04/2015.
- */
 
-var express         = require('express');
-var mongo           = require('./mongo');
-var bcrypt          = require('./bcrypt');
-var rules           = require('./rules');
+// dependencies
+var express         = require('express'),
+    mongo           = require('./mongo'),
+    bcrypt          = require('./bcrypt'),
+    rules           = require('./rules');
 
 var router = express.Router();
 
 /* GET authenticate page. */
-router.get('/', rules.rules().isLogged, function(req, res, next) {
+router.get('/', rules.rules().isLogged, function(req, res) {
     res.render('auth', { csrfToken: req.csrfToken() });
 });
 
 /* POST authetication 'login' action*/
-router.post('/', function(req, res, next) {
+router.post('/', function(req, res) {
     mongo.Users.findOne({ email: req.body.email }, function(err, user) {
+        var error = "";
         if (err) {
-            var error = 'Opps, something happened! Try again in few minutes!'
+            error = 'Opps, something happened! Try again in few minutes!';
             res.render('auth', { error: error });
         } else {
-            var error = "";
-
+            error = "";
             if (!user) {
                 error = "Invalid email or password!";
                 res.render('auth', { error: error });

@@ -17,13 +17,13 @@ router.post('/', function(req, res) {
     var user = mongo.Users({
         firstname: req.body.firstname,
         lastname: req.body.lastname,
-        email: req.body.email,
+        email: req.body.email.toLowerCase(),
         password: bcrypt.crypt().getCrypt(req.body.password)
     });
 
     user.save(function(err) {
         if (err) {
-            var error = 'Opps, something happened! Try again in few minutes!'
+            var error = 'Opps, something happened! Try again in few minutes!';
             if (err.code === 11000) {
                 error = 'That email is already taken, try another!';
             }

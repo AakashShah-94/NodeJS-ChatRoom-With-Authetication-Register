@@ -1,6 +1,3 @@
-/**
- * Created by User on 06/04/2015.
- */
 
 function rules() {
     return {
